@@ -1,0 +1,19 @@
+{
+  "name": "fifteen-puzzle",
+  "version": "1.0.0",
+  "description": "Implementation of a classic children's puzzle",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gsuxlzt/fifteen-puzzle.git"
+  },
+  "author": "Jan Miguel Carangan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gsuxlzt/fifteen-puzzle/issues"
+  },
+  "homepage": "https://github.com/gsuxlzt/fifteen-puzzle#readme"
+}
