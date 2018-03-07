@@ -1,3 +1,6 @@
+:root {
+   --tile-size: 50px;
+}
 body {
     padding: 20px;
     text-align: center;
@@ -49,5 +52,14 @@ body {
 
 #puzzle {
     max-width: 90%;
+
+}
+
+.tile, .empty {
+    width: var(--tile-size);
+    height: var(--tile-size);
+    color: #324851;
+    background-color: #7da3a1;
+    cursor: pointer;
 }
 
