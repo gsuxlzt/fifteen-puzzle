@@ -45,6 +45,7 @@ body {
     box-shadow: none;
     background: transparent;
     font-weight: 600;
+    transition: all 0.3s;
 }
 
 #scramble:hover, #new_board:hover {
