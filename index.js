@@ -13,6 +13,11 @@ let Puzzle = (function(){
         return numbersArray;
     };
 
+    function styleBoard() {
+        puzzle.style.height = `${tileSize*grid + 5}px`;
+        puzzle.style.width = `${tileSize*grid + 5}px`;
+    }
+
     function createBoard() {
         let board = [...Array(grid).keys()].map(item=>Array(grid));   
         return board;
@@ -20,6 +25,8 @@ let Puzzle = (function(){
 
     function renderBoard(board,numbersArray) {
         let count = 0;
+        console.log(board);
+        console.log(numbersArray);
         board.forEach((item,index)=>{
             for(let i=0; i < item.length;i++) {
                 let cell = document.createElement('span');
@@ -37,6 +44,7 @@ let Puzzle = (function(){
     }
     
     Puzzle.scramble = function() {
+        styleBoard();
         let board = createBoard();
         let randomNumbers = shuffle();
         let count = 0;

@@ -4,6 +4,7 @@
 body {
     padding: 20px;
     text-align: center;
+    background-color: #7da3a1;
 }
 
 .wrap {
@@ -21,7 +22,7 @@ body {
 
 .controls {
     flex-grow: 1;
-    color: #34675C;
+    color: #324851;
     padding-bottom: 10px;
 
 }
@@ -39,8 +40,8 @@ body {
 
 #scramble, #new_board {
     padding: 8px 5px;
-    color: #34675C;
-    border: 2px solid #34675C;
+    color: #324851;
+    border: 2px solid #324851;
     box-shadow: none;
     background: transparent;
     font-weight: 600;
@@ -48,15 +49,15 @@ body {
 
 #scramble:hover, #new_board:hover {
     color: white;
-    background: #34675C;
+    background: #324851;
 }
 
 #puzzle {
+    margin: 0 auto;
     position: relative;
     max-width: 90%;
+    border: 2px solid #324851;
 }
-
-
 
 .tile {
     position: absolute;
@@ -65,15 +66,15 @@ body {
     width: var(--tile-size);
     height: var(--tile-size);
     line-height: var(--tile-size); 
-    color: #eee;
-    background-color: #7da3a1;
+    color: #fff;
+    background-color: #34675c;
     font-weight: 600;
     text-shadow: -1px -1px 0 rgba(0,0,0, 0.5);
     cursor: pointer;
 }
 
 .empty {
-    background-color: white;
+    background-color: #7da3a1;
 }
 
 .slide {
