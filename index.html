@@ -11,7 +11,12 @@
             <div class="container">
                 <div class="controls">
                     <span>Board size (until 40x40):
-                    <input type="text" id="grid" size="2">
+                    <input type="text" id="grid" size="2" value="4">
+                    </span>
+                </div>
+                <div class="controls">
+                    <span>Tile size:
+                    <input type="text" id="grid" size="3" value="50">px
                     </span>
                 </div>
                 <div class="buttons">
@@ -19,8 +24,8 @@
                     <span>&nbsp; or &nbsp;</span>
                     <button id = "new_board">ADD BOARD</button>
                 </div>
-               <div id="puzzle"></div>
             </div>
+            <div id="puzzle" class="sliding"></div>
         </div>
                <script src="index.js"></script>
     </body>

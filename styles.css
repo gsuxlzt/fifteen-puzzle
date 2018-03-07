@@ -16,12 +16,13 @@ body {
     align-items: center;
     align-content: flex-start;
     justify-content: center;
+    padding-bottom: 20px;
 }
 
 .controls {
     flex-grow: 1;
     color: #34675C;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 
 }
 .controls span {
@@ -51,15 +52,31 @@ body {
 }
 
 #puzzle {
+    position: relative;
     max-width: 90%;
-
 }
 
-.tile, .empty {
+
+
+.tile {
+    position: absolute;
+    display: block;
+    border-radius: 4px;
     width: var(--tile-size);
     height: var(--tile-size);
-    color: #324851;
+    line-height: var(--tile-size); 
+    color: #eee;
     background-color: #7da3a1;
+    font-weight: 600;
+    text-shadow: -1px -1px 0 rgba(0,0,0, 0.5);
     cursor: pointer;
+}
+
+.empty {
+    background-color: white;
+}
+
+.slide {
+    transition: all 0.15s;
 }
 
