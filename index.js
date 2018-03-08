@@ -25,16 +25,13 @@ let Puzzle = (function(){
 
     function renderBoard(board,numbersArray) {
         let count = 0;
-        console.log(board);
-        console.log(numbersArray);
         board.forEach((item,index)=>{
             for(let i=0; i < item.length;i++) {
                 let cell = document.createElement('span');
                 cell.id = `${index}${i}`;
                 cell.classList.add('tile');
-                console.log(tileSize);
-                cell.style.top = `${i*tileSize+1*i+1}px`;
-                cell.style.left = `${index*tileSize+1*index+1}px`;
+                cell.style.left = `${i*tileSize+1*i+1}px`;
+                cell.style.top = `${index*tileSize+1*index+1}px`;
                 cell.innerHTML = numbersArray[count];
                 if (numbersArray[count] === ' ') cell.classList.add('empty');
                 puzzle.appendChild(cell);
