@@ -21,7 +21,7 @@ let Puzzle = (function(){
         return board;
     }
 
-   
+  
     class Puzzle {
         constructor (tileSize, grid, puzzle) {
             this.tileSize = tileSize;
@@ -29,17 +29,64 @@ let Puzzle = (function(){
             this.puzzle = puzzle;
         }
 
+        getAdjacentTiles(row,col) {
+            let arr = [];
+            if (row > 0) arr.push(document.getElementById(`${this.puzzle.id}-${row-1}-${col}`))
+            if (row < this.grid) arr.push(document.getElementById(`${this.puzzle.id}-${row+1}-${col}`))
+            if (col > 0) arr.push(document.getElementById(`${this.puzzle.id}-${row}-${col-1}`))
+            if (col < this.grid) arr.push(document.getElementById(`${this.puzzle.id}-${row}-${col+1}`))
+            return arr.filter(item=>item !== null);
+        }
+
+        getEmptytile(id) {
+            let row = Number(id.split('-')[1]);
+            let col = Number(id.split('-')[2]);
+            let emptyTile;
+            let adjacentTiles = this.getAdjacentTiles(row,col);
+            adjacentTiles.forEach(item=> {
+                if (item.classList.contains('empty')) emptyTile = item;
+            });
+
+            return emptyTile;
+        }
+
+       slideTile(target) {
+            let emptyTile = this.getEmptytile(target.id);
+            if (emptyTile) {
+                let temp = {
+                    style: target.style.cssText,
+                    id: target.id
+                };
+                target.id = emptyTile.id;
+                target.style = emptyTile.style.cssText;
+                emptyTile.id = temp.id;
+                emptyTile.style = temp.style;
+            }
+        }
+ 
+
         renderBoard(board,numbersArray) {
+            var self = this;
             let count = 0;
             board.forEach((item,index)=>{
                 for(let i=0; i < item.length;i++) {
                     let cell = document.createElement('span');
-                    cell.id = `${index}${i}`;
+                    cell.id = `${this.puzzle.id}-${index}-${i}`;
                     cell.classList.add('tile');
+                    cell.style.width = `${this.tileSize}px`;
+                    cell.style.height = `${this.tileSize}px`;
+                    cell.style.lineHeight = `${this.tileSize}px`;
                     cell.style.left = `${i*this.tileSize+1*i+1}px`;
                     cell.style.top = `${index*this.tileSize+1*index+1}px`;
                     cell.innerHTML = numbersArray[count];
-                    if (numbersArray[count] === ' ') cell.classList.add('empty');
+                    if (numbersArray[count] === ' ') {
+                        cell.classList.add('empty');
+                    }
+                    cell.addEventListener('click',function(e){
+                        let tile = e.target;
+                        if (tile.classList.contains('empty')) return false;
+                        else self.slideTile(e.target);
+                    });
                     this.puzzle.appendChild(cell);
                     count++;
                 };
@@ -68,7 +115,6 @@ let inputs = document.querySelectorAll('input');
 
 for (let i = 0; i < inputs.length; i++) {
     inputs[i].addEventListener('change',function(e) {
-        console.log(inputs[i]);
         document.getElementById(inputs[i].id).value = e.target.value;
     });
 };
@@ -78,15 +124,14 @@ let newBoard = document.getElementById('new_board');
 newBoard.addEventListener('click', function(){
     let puzzle = document.createElement('div');
     puzzle.id = `puzzle${puzzles.length}`;
-    puzzle.className = 'puzzle';
+    puzzle.classList.add('puzzle');
+    puzzle.classList.add('sliding');
     puzzlesNode.appendChild(puzzle);
     let tileSize = Number(document.getElementById('tile_size').value);
-    document.documentElement.style.setProperty('--tile-size', `${tileSize}px`);
-    tileSize = getComputedStyle(document.body).getPropertyValue('--tile-size').replace(/[^-\d\.]/g, '');
     let grid = Number(document.getElementById('grid').value);
-    let MyPuzzle = new Puzzle(tileSize,grid,puzzle);
-    puzzles.push(MyPuzzle);
-    MyPuzzle.scramble();
+    let NewPuzzle = new Puzzle(tileSize,grid,puzzle);
+    puzzles.push(NewPuzzle);
+    NewPuzzle.scramble();
 });
 
 let startOver = document.getElementById('start_over');
@@ -94,4 +139,8 @@ let startOver = document.getElementById('start_over');
 startOver.addEventListener('click', function() {
     puzzles.forEach(item => item.scramble());
     
-})
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    newBoard.click();
+  });
