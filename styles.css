@@ -80,7 +80,16 @@ body {
 }
 
 .disabled, .disabled span{
-    background-color: gray;
     cursor: not-allowed;
+    pointer-events: none;
+}
+
+.disabled {
+    border: 2px solid #F0F0F0;
+}
+
+.disabled span{
+    background-color:#F0F0F0;
+    color: #7da3a1;
 }
 
