@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>15 Puzzle</title>
-        <link href="styles.css" rel="stylesheet"/>
-    </head>
-    <body>
-        <div class="wrap">
-            <div class="container">
-                <div class="controls">
-                    <span>Board size (until 40x40):
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15 Puzzle</title>
+    <link href="styles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="container">
+            <div class="controls">
+                <span>Board size (until 40x40):
                     <input type="text" id="grid" size="2" value="4">
                     </span>
-                </div>
-                <div class="controls">
-                    <span>Tile size:
+            </div>
+            <div class="controls">
+                <span>Tile size:
                     <input type="text" id="tile_size" size="3" value="50">px
                     </span>
-                </div>
-                <div class="buttons">
-                    <button id="start_over">START OVER</button>
-                    <span>&nbsp; or &nbsp;</span>
-                    <button id = "new_board">ADD BOARD</button>
-                </div>
+            </div>
+            <div class="buttons">
+                <button id="start_over">START OVER</button>
+                <span>or</span>
+                <button id="new_board">ADD BOARD</button>
             </div>
         </div>
-        <div id="puzzles"></div>
-               <script src="index.js"></script>
-    </body>
+    </div>
+    <div id="puzzles"></div>
+    <script src="index.js"></script>
+</body>
+
 </html>
