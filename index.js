@@ -7,9 +7,17 @@ let Puzzle = (function() {
         let numbersArray = Array.apply(null, Array(Math.pow(grid, 2))).map((item, index) => index + 1);
         numbersArray.splice(-1, 1);
         numbersArray.push(" ");
-        for (let j, x, i = numbersArray.length; i; j = parseInt(Math.random() * i), x = numbersArray[--i], numbersArray[i] = numbersArray[j], numbersArray[j] = x);
+        let temp;
+        let rand;
+        for (let i = numbersArray.length; i; i--) {
+            rand = parseInt(Math.random() * i);
+            temp = numbersArray[--i];
+            numbersArray[i] = numbersArray[rand];
+            numbersArray[rand] = temp;
+        }
+        // for (let j, x, i = numbersArray.length; i; j = parseInt(Math.random() * i), x = numbersArray[--i], numbersArray[i] = numbersArray[j], numbersArray[j] = x);
         return numbersArray;
-    };
+    }
 
     function styleBoard(tileSize, grid, puzzle) {
         puzzle.style.height = `${tileSize*grid + 2*(grid+1)}px`;
@@ -69,7 +77,6 @@ let Puzzle = (function() {
         }
 
         checkSolution() {
-            let self = this;
             let lastElem = document.getElementById(`${this.puzzle.id}-${this.grid-1}-${this.grid-1}`);
             if (!lastElem.innerText === " ") return;
             let count = 1;
@@ -126,7 +133,7 @@ let Puzzle = (function() {
                     });
                     this.puzzle.appendChild(cell);
                     count++;
-                };
+                }
             });
         }
 
@@ -158,7 +165,7 @@ for (let i = 0; i < inputs.length; i++) {
     inputs[i].addEventListener("change", function(e) {
         document.getElementById(inputs[i].id).value = e.target.value;
     });
-};
+}
 
 let newBoard = document.getElementById("new_board");
 
