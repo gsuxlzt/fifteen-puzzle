@@ -18,19 +18,33 @@ let Puzzle = (function() {
         return numbersArray;
     }
 
+    //to determine the size of the puzzle container. Can be omitted.
     function styleBoard(tileSize, grid, puzzle) {
         puzzle.style.height = `${tileSize*grid + 2*(grid+1)}px`;
         puzzle.style.width = `${tileSize*grid + 2*(grid+1)}px`;
     }
 
+    //creates an empty 2D matrix for the board.
     function createBoard(grid) {
         let board = [...Array(grid).keys()].map(item => Array(grid));
         return board;
     }
+
+    /*
+        Checks if the created board is solvable.
+        Equation for determining if the board is solvable:
+        if N is odd, inversions should be even.
+        if N is even,
+            if empty tile position from the bottom is add, inversions should be even.
+            if empty tile position from the bottom is even, inversions should be odd.
+    */
     function isSolvable(board,grid,emptyPos) {
+        //flattens the array.
         let toCheck = board.reduce((acc, curr) => [...acc, ...curr]);
+        //changes the empty array element to 0. This is needed for determining the number of array inversions.
         let str = toCheck.indexOf(" ");
         toCheck[str] = 0;
+        //number of inversions.
         let count = 0;
         for (let i = 0; i < Math.pow(grid, 2) - 1; i++) {
             for (let j = i + 1; j < Math.pow(grid, 2); j++) {
@@ -44,6 +58,7 @@ let Puzzle = (function() {
         }
     }
 
+    //gets the four tiles adjacent to the current tile.
     function getAdjacentTiles(row, col,id,grid) {
         let arr = [];
         if (row > 0) arr.push(document.getElementById(`${id}-${row-1}-${col}`))
@@ -53,6 +68,7 @@ let Puzzle = (function() {
         return arr.filter(item => item !== null);
     }
 
+    //determines what tile among the adjacent tiles is the empty tile.
     function getEmptytile(id,grid) {
         let puzzleId = id.split("-")[0];
         let row = Number(id.split("-")[1]);
@@ -75,6 +91,7 @@ let Puzzle = (function() {
             this.emptyPos = 0;
         }
 
+        // checks if the board is solved.
         checkSolution() {
             let lastElem = document.getElementById(`${this.puzzle.id}-${this.grid-1}-${this.grid-1}`);
             if (!lastElem.innerText === " ") return;
@@ -92,6 +109,7 @@ let Puzzle = (function() {
             })
         }
 
+        //event handler for sliding animation
         slideTile(target) {
             let emptyTile = getEmptytile(target.id, this.grid);
             if (emptyTile) {
@@ -107,6 +125,7 @@ let Puzzle = (function() {
             }
         }
 
+        //creates the board and puts the necessary details needed for each tile of the board.
         renderBoard(board, numbersArray) {
             let self = this;
             let count = 0;
@@ -136,7 +155,8 @@ let Puzzle = (function() {
             });
         }
 
-        scramble() {
+        init() {
+            //deletes a previous instance of the puzzle.
             while (this.puzzle.firstChild) {
                 this.puzzle.removeChild(this.puzzle.firstChild);
             }
@@ -151,7 +171,8 @@ let Puzzle = (function() {
                 }
             });
             this.renderBoard(this.board, randomNumbers);
-            if (isSolvable(this.board,this.grid,this.emptyPos)) this.scramble();
+            //recreates the board if the previous one is not solvable.
+            if (!isSolvable(this.board,this.grid,this.emptyPos)) this.init();
         }
     }
 
@@ -160,46 +181,55 @@ let Puzzle = (function() {
 
 let inputs = document.querySelectorAll("input");
 
+//add event listener on input elements to change its value on change and to prevent user from putting non-numeric characters.
 for (let i = 0; i < inputs.length; i++) {
     inputs[i].addEventListener("change", function(e) {
         document.getElementById(inputs[i].id).value = e.target.value;
     });
+
     inputs[i].addEventListener("keydown", function(e){
         if ((e.which < 48 || e.which > 57) && e.which !== 8 && e.which !== 46 && (e.which < 37 || e.which > 40)) e.preventDefault();
-    })
+    });
 }
 
 let newBoard = document.getElementById("new_board");
 
+//event listener for adding a new board.
 newBoard.addEventListener("click", function() {
     let grid = Number(document.getElementById("grid").value);
     let tileSize = Number(document.getElementById("tile_size").value);
+
     if (grid > 40 || tileSize > 500) {
         alert('Grid or tile size too big.');
         return;
     }
+
     if (grid < 2 || tileSize < 20) {
         alert('Grid or tile size too small.');
         return;
     }
-   let puzzle = document.createElement("div");
+
+    let puzzle = document.createElement("div");
     puzzle.id = `puzzle${puzzles.length}`;
     puzzle.classList.add("puzzle");
     puzzle.classList.add("sliding");
     puzzlesNode.appendChild(puzzle);
     let NewPuzzle = new Puzzle(tileSize, grid, puzzle);
     puzzles.push(NewPuzzle);
-    NewPuzzle.scramble();
+    NewPuzzle.init();
 });
 
+// shuffles all puzzles.
 let startOver = document.getElementById("start_over");
 
 startOver.addEventListener("click", function() {
     puzzles.forEach(item => {
-        item.scramble();
+        if (item.puzzle.classList.contains('disabled')) return;
+        item.init();
     });
 });
 
 document.addEventListener("DOMContentLoaded", function() {
+    // instantiate a puzzle onload.
     newBoard.click();
 });
