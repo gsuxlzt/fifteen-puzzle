@@ -27,6 +27,44 @@ let Puzzle = (function() {
         let board = [...Array(grid).keys()].map(item => Array(grid));
         return board;
     }
+    function isSolvable(board,grid,emptyPos) {
+        let toCheck = board.reduce((acc, curr) => [...acc, ...curr]);
+        let str = toCheck.indexOf(" ");
+        toCheck[str] = 0;
+        let count = 0;
+        for (let i = 0; i < Math.pow(grid, 2) - 1; i++) {
+            for (let j = i + 1; j < Math.pow(grid, 2); j++) {
+                if (toCheck[j] && toCheck[i] && toCheck[i] > toCheck[j]) count++;
+            }
+        }
+        if (grid % 2 !== 0) return count % 2 === 0;
+        else {
+            if (emptyPos % 2 === 0) return count % 2 !== 0;
+            else return count % 2 === 0;
+        }
+    }
+
+    function getAdjacentTiles(row, col,id,grid) {
+        let arr = [];
+        if (row > 0) arr.push(document.getElementById(`${id}-${row-1}-${col}`))
+        if (row < grid) arr.push(document.getElementById(`${id}-${row+1}-${col}`))
+        if (col > 0) arr.push(document.getElementById(`${id}-${row}-${col-1}`))
+        if (col < grid) arr.push(document.getElementById(`${id}-${row}-${col+1}`))
+        return arr.filter(item => item !== null);
+    }
+
+    function getEmptytile(id,grid) {
+        let puzzleId = id.split("-")[0];
+        let row = Number(id.split("-")[1]);
+        let col = Number(id.split("-")[2]);
+        let emptyTile;
+        let adjacentTiles = getAdjacentTiles(row, col, puzzleId, grid);
+        adjacentTiles.forEach(item => {
+            if (item.classList.contains("empty")) emptyTile = item;
+        });
+
+        return emptyTile;
+    }
 
     class Puzzle {
         constructor(tileSize, grid, puzzle) {
@@ -35,44 +73,6 @@ let Puzzle = (function() {
             this.puzzle = puzzle;
             this.board = [];
             this.emptyPos = 0;
-        }
-
-        isSolvable() {
-            let toCheck = this.board.reduce((acc, curr) => [...acc, ...curr]);
-            let str = toCheck.indexOf(" ");
-            toCheck[str] = 0;
-            let count = 0;
-            for (let i = 0; i < Math.pow(this.grid, 2) - 1; i++) {
-                for (let j = i + 1; j < Math.pow(this.grid, 2); j++) {
-                    if (toCheck[j] && toCheck[i] && toCheck[i] > toCheck[j]) count++;
-                }
-            }
-            if (this.grid % 2 !== 0) return count % 2 === 0;
-            else {
-                if (this.emptyPos % 2 === 0) return count % 2 !== 0;
-                else return count % 2 === 0;
-            }
-        }
-
-        getAdjacentTiles(row, col) {
-            let arr = [];
-            if (row > 0) arr.push(document.getElementById(`${this.puzzle.id}-${row-1}-${col}`))
-            if (row < this.grid) arr.push(document.getElementById(`${this.puzzle.id}-${row+1}-${col}`))
-            if (col > 0) arr.push(document.getElementById(`${this.puzzle.id}-${row}-${col-1}`))
-            if (col < this.grid) arr.push(document.getElementById(`${this.puzzle.id}-${row}-${col+1}`))
-            return arr.filter(item => item !== null);
-        }
-
-        getEmptytile(id) {
-            let row = Number(id.split("-")[1]);
-            let col = Number(id.split("-")[2]);
-            let emptyTile;
-            let adjacentTiles = this.getAdjacentTiles(row, col);
-            adjacentTiles.forEach(item => {
-                if (item.classList.contains("empty")) emptyTile = item;
-            });
-
-            return emptyTile;
         }
 
         checkSolution() {
@@ -93,7 +93,7 @@ let Puzzle = (function() {
         }
 
         slideTile(target) {
-            let emptyTile = this.getEmptytile(target.id);
+            let emptyTile = getEmptytile(target.id, this.grid);
             if (emptyTile) {
                 let temp = {
                     style: target.style.cssText,
@@ -128,7 +128,7 @@ let Puzzle = (function() {
                     cell.addEventListener("click", function(e) {
                         let tile = e.target;
                         if (tile.classList.contains("empty")) return false;
-                        else self.slideTile(e.target);
+                        else self.slideTile(tile);
                     });
                     this.puzzle.appendChild(cell);
                     count++;
@@ -151,7 +151,7 @@ let Puzzle = (function() {
                 }
             });
             this.renderBoard(this.board, randomNumbers);
-            if (!this.isSolvable()) this.scramble();
+            if (isSolvable(this.board,this.grid,this.emptyPos)) this.scramble();
         }
     }
 
