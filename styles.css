@@ -1,6 +1,5 @@
 body {
     text-align: center;
-    background-color: #7da3a1;
 }
 
 .wrap {
@@ -52,7 +51,7 @@ body {
 .puzzle {
     margin: 10px auto;
     position: relative;
-    border: 2px solid #324851;
+    border: 2px solid #34675c;
 }
 
 .tile {
@@ -69,10 +68,15 @@ body {
 
 .empty {
     z-index: 0;
-    background-color: #7da3a1;
+    background-color: white;
 }
 
 .sliding span {
     transition: all 0.2s;
+}
+
+.disabled, .disabled span{
+    background-color: gray;
+    cursor: not-allowed;
 }
 
