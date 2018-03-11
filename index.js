@@ -9,13 +9,12 @@ let Puzzle = (function() {
         numbersArray.push(" ");
         let temp;
         let rand;
-        for (let i = numbersArray.length; i; i--) {
+        for (let i = numbersArray.length-1; i >= 0; i--) {
             rand = parseInt(Math.random() * i);
-            temp = numbersArray[--i];
+            temp = numbersArray[i];
             numbersArray[i] = numbersArray[rand];
             numbersArray[rand] = temp;
         }
-        // for (let j, x, i = numbersArray.length; i; j = parseInt(Math.random() * i), x = numbersArray[--i], numbersArray[i] = numbersArray[j], numbersArray[j] = x);
         return numbersArray;
     }
 
