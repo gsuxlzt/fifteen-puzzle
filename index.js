@@ -2,6 +2,7 @@ let puzzles = [];
 let puzzlesNode = document.getElementById('puzzles');
 
 let Puzzle = (function(){
+    
     //method for shuffling an array. got it from stack overflow.
     function shuffle(grid) {
        let numbersArray = Array.apply(null, Array(Math.pow(grid,2))).map((item,index)=>index+1);
@@ -12,21 +13,41 @@ let Puzzle = (function(){
     };
 
     function styleBoard(tileSize,grid,puzzle) {
-        puzzle.style.height = `${tileSize*grid + 5}px`;
-        puzzle.style.width = `${tileSize*grid + 5}px`;
+        puzzle.style.height = `${tileSize*grid + 2*(grid+1)}px`;
+        puzzle.style.width = `${tileSize*grid + 2*(grid+1)}px`;
     }
 
     function createBoard(grid) {
         let board = [...Array(grid).keys()].map(item=>Array(grid));   
         return board;
     }
-
   
     class Puzzle {
         constructor (tileSize, grid, puzzle) {
             this.tileSize = tileSize;
             this.grid = grid;
             this.puzzle = puzzle;
+            this.board = [];
+            this.emptyPos = 0;
+        }
+
+        isSolvable() {
+            let toCheck = this.board.reduce((acc,curr)=> [...acc,...curr]);
+            var str = toCheck.indexOf(' ');
+            toCheck[str] = 0;
+            console.log(toCheck);
+            let count = 0;
+            for (let i = 0; i < Math.pow(this.grid,2) - 1; i++) {
+                for (let j = i+1; j < Math.pow(this.grid,2); j++) {
+                    if (toCheck[j] && toCheck[i] && toCheck[i] > toCheck[j] ) count++;
+                }
+            }
+            if (this.grid % 2 !== 0) return count % 2 === 0;
+            else {
+                if (this.emptyPos % 2 === 0) return count % 2 !== 0;
+                else return count % 2 === 0;
+            }
+    
         }
 
         getAdjacentTiles(row,col) {
@@ -50,7 +71,25 @@ let Puzzle = (function(){
             return emptyTile;
         }
 
-       slideTile(target) {
+        checkSolution() {
+            let self = this;
+            let lastElem = document.getElementById(`${this.puzzle.id}-${this.grid-1}-${this.grid-1}`);
+            if (!lastElem.innerText === ' ') return;
+            let count = 1;
+            for (let i = 0; i < this.grid; i++) {
+                for(let j = 0; j < this.grid; j++) {
+                    if ( count <= Math.pow(this.grid,2)-1 && document.getElementById(`${this.puzzle.id}-${i}-${j}`).innerText.toString() !== count.toString()) return;
+                    count++;
+                }
+            }
+            alert('You have finished the puzzle! Congratulations!');
+            this.puzzle.classList.add('disabled');
+            this.puzzle.addEventListener('click',function(e) {
+                e.preventDefault();
+            })
+        }
+
+        slideTile(target) {
             let emptyTile = this.getEmptytile(target.id);
             if (emptyTile) {
                 let temp = {
@@ -61,9 +100,9 @@ let Puzzle = (function(){
                 target.style = emptyTile.style.cssText;
                 emptyTile.id = temp.id;
                 emptyTile.style = temp.style;
+                this.checkSolution();
             }
         }
- 
 
         renderBoard(board,numbersArray) {
             var self = this;
@@ -76,11 +115,12 @@ let Puzzle = (function(){
                     cell.style.width = `${this.tileSize}px`;
                     cell.style.height = `${this.tileSize}px`;
                     cell.style.lineHeight = `${this.tileSize}px`;
-                    cell.style.left = `${i*this.tileSize+1*i+1}px`;
-                    cell.style.top = `${index*this.tileSize+1*index+1}px`;
+                    cell.style.left = `${i*this.tileSize+2*i+2}px`;
+                    cell.style.top = `${index*this.tileSize+2*index+2}px`;
                     cell.innerHTML = numbersArray[count];
                     if (numbersArray[count] === ' ') {
                         cell.classList.add('empty');
+                        this.emptyPos = Number(this.grid - index);
                     }
                     cell.addEventListener('click',function(e){
                         let tile = e.target;
@@ -95,16 +135,22 @@ let Puzzle = (function(){
  
         scramble () {
             styleBoard(this.tileSize, this.grid,this.puzzle);
-            let board = createBoard(this.grid);
+            this.board = createBoard(this.grid);
             let randomNumbers = shuffle(this.grid);
             let count = 0;
-            board.forEach(item=>{
+            this.board.forEach(item=>{
                 for(let i=0; i < item.length; i++) {
                     item[i] = randomNumbers[count];
                     count++;
                 }
             });
-            this.renderBoard(board, randomNumbers);
+            this.renderBoard(this.board, randomNumbers);
+            if (!this.isSolvable()) {
+                while (this.puzzle.firstChild) {
+                    this.puzzle.removeChild(this.puzzle.firstChild);
+                }
+                this.scramble()
+            };
         }
     }
     
@@ -122,13 +168,14 @@ for (let i = 0; i < inputs.length; i++) {
 let newBoard = document.getElementById('new_board');
 
 newBoard.addEventListener('click', function(){
+    let grid = Number(document.getElementById('grid').value);
+    if (grid > 40) return;
+    let tileSize = Number(document.getElementById('tile_size').value);
     let puzzle = document.createElement('div');
     puzzle.id = `puzzle${puzzles.length}`;
     puzzle.classList.add('puzzle');
     puzzle.classList.add('sliding');
     puzzlesNode.appendChild(puzzle);
-    let tileSize = Number(document.getElementById('tile_size').value);
-    let grid = Number(document.getElementById('grid').value);
     let NewPuzzle = new Puzzle(tileSize,grid,puzzle);
     puzzles.push(NewPuzzle);
     NewPuzzle.scramble();
