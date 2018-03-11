@@ -35,7 +35,6 @@ let Puzzle = (function(){
             let toCheck = this.board.reduce((acc,curr)=> [...acc,...curr]);
             var str = toCheck.indexOf(' ');
             toCheck[str] = 0;
-            console.log(toCheck);
             let count = 0;
             for (let i = 0; i < Math.pow(this.grid,2) - 1; i++) {
                 for (let j = i+1; j < Math.pow(this.grid,2); j++) {
