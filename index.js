@@ -164,15 +164,25 @@ for (let i = 0; i < inputs.length; i++) {
     inputs[i].addEventListener("change", function(e) {
         document.getElementById(inputs[i].id).value = e.target.value;
     });
+    inputs[i].addEventListener("keydown", function(e){
+        if ((e.which < 48 || e.which > 57) && e.which !== 8 && e.which !== 46 && (e.which < 37 || e.which > 40)) e.preventDefault();
+    })
 }
 
 let newBoard = document.getElementById("new_board");
 
 newBoard.addEventListener("click", function() {
     let grid = Number(document.getElementById("grid").value);
-    if (grid > 40) return;
     let tileSize = Number(document.getElementById("tile_size").value);
-    let puzzle = document.createElement("div");
+    if (grid > 40 || tileSize > 500) {
+        alert('Grid or tile size too big.');
+        return;
+    }
+    if (grid < 2 || tileSize < 20) {
+        alert('Grid or tile size too small.');
+        return;
+    }
+   let puzzle = document.createElement("div");
     puzzle.id = `puzzle${puzzles.length}`;
     puzzle.classList.add("puzzle");
     puzzle.classList.add("sliding");
