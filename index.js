@@ -65,6 +65,8 @@ let Puzzle = (function() {
         if (row < grid) arr.push(document.getElementById(`${id}-${row+1}-${col}`))
         if (col > 0) arr.push(document.getElementById(`${id}-${row}-${col-1}`))
         if (col < grid) arr.push(document.getElementById(`${id}-${row}-${col+1}`))
+
+        //array is filtered for instances where the tile is at the edge, thus giving null elements.
         return arr.filter(item => item !== null);
     }
 
